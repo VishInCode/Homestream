@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { type Movie, getMoviesByGenre } from "@/lib/movies";
-import { getAllMovies } from "@/lib/movie-data";
+import { getAllMovies, addMovie } from "@/lib/movie-data";
 import MovieList from "@/components/movie-list";
 import MoviePlayer from "@/components/movie-player";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Upload, Search, Film } from "lucide-react";
 import UploadMovie from "@/components/upload-movie";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function Home() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
@@ -27,9 +29,16 @@ export default function Home() {
 
     const storedRecentlyPlayed = localStorage.getItem("recentlyPlayed");
     if (storedRecentlyPlayed) {
-      const recentIds = JSON.parse(storedRecentlyPlayed);
-      const recentMovies = movies.filter((m) => recentIds.includes(m.id));
-      setRecentlyPlayed(recentMovies);
+      try {
+        const recentIds = JSON.parse(storedRecentlyPlayed);
+        if (Array.isArray(recentIds)) {
+          const recentMovies = movies.filter((m) => recentIds.includes(m.id));
+          setRecentlyPlayed(recentMovies);
+        }
+      } catch (error) {
+        console.error("Failed to parse recently played movies:", error);
+        localStorage.removeItem("recentlyPlayed");
+      }
     }
     setIsLoading(false);
   }, []);
@@ -43,10 +52,14 @@ export default function Home() {
       ...recentlyPlayed.filter((m) => m.id !== movie.id),
     ].slice(0, 10);
     setRecentlyPlayed(updatedRecentlyPlayed);
-    localStorage.setItem(
-      "recentlyPlayed",
-      JSON.stringify(updatedRecentlyPlayed.map((m) => m.id))
-    );
+    try {
+      localStorage.setItem(
+        "recentlyPlayed",
+        JSON.stringify(updatedRecentlyPlayed.map((m) => m.id))
+      );
+    } catch (error) {
+      console.error("Failed to save recently played movies:", error);
+    }
   };
 
   const handleBackToList = () => {
@@ -54,21 +67,22 @@ export default function Home() {
   };
 
   const handleUploadMovie = (
-    newMovie: Omit<Movie, "id" | "url"> & { file: File }
+    newMovie: Omit<Movie, "id" | "url" | "imageUrl"> & { file: File }
   ) => {
     const newMovieWithId: Movie = {
       ...newMovie,
-      id: allMovies.length + 1,
+      id: Date.now(),
       url: URL.createObjectURL(newMovie.file),
-      imageUrl: "https://picsum.photos/seed/9/400/600",
+      imageUrl: `https://picsum.photos/seed/${Date.now()}/400/600`,
     };
-    const updatedMovies = [newMovieWithId, ...allMovies];
+    addMovie(newMovieWithId);
+    const updatedMovies = getAllMovies();
     setAllMovies(updatedMovies);
     if (
       !searchQuery ||
       newMovie.title.toLowerCase().includes(searchQuery.toLowerCase())
     ) {
-      setFilteredMovies([newMovieWithId, ...filteredMovies]);
+      setFilteredMovies(updatedMovies);
     }
     setIsUploading(false);
   };
@@ -219,9 +233,3 @@ export default function Home() {
     </div>
   );
 }
-
-// Added Card and Image for search results display
-import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-
-    

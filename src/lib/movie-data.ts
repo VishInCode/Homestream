@@ -83,5 +83,3 @@ export function getAllMovies(): Movie[] {
 export function addMovie(movie: Movie) {
   allMovies = [movie, ...allMovies];
 }
-
-    

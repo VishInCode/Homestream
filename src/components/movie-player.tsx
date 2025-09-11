@@ -40,5 +40,3 @@ export default function MoviePlayer({ movie, onBack }: MoviePlayerProps) {
     </div>
   );
 }
-
-    

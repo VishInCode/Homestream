@@ -29,7 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Movie } from "@/lib/movies";
+import { type Movie } from "@/lib/movies";
 import { useRef } from "react";
 
 const formSchema = z.object({
@@ -44,7 +44,7 @@ type UploadFormValues = z.infer<typeof formSchema>;
 interface UploadMovieProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onUpload: (newMovie: Omit<Movie, "id" | "url"> & { file: File }) => void;
+  onUpload: (newMovie: Omit<Movie, "id" | "url" | "imageUrl"> & { file: File }) => void;
 }
 
 export default function UploadMovie({
