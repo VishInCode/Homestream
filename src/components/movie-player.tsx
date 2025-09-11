@@ -26,7 +26,7 @@ export default function MoviePlayer({ movie, onBack }: MoviePlayerProps) {
           Back to Library
         </Button>
       </div>
-      <div className="aspect-video w-full rounded-lg overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-border">
+      <div className="aspect-video w-full rounded-lg overflow-hidden shadow-2xl shadow-primary/10 ring-1 ring-border">
         <video
           key={movie.id}
           src={movie.url}
@@ -40,3 +40,5 @@ export default function MoviePlayer({ movie, onBack }: MoviePlayerProps) {
     </div>
   );
 }
+
+    
