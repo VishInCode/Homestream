@@ -4,9 +4,14 @@ import { useState } from "react";
 import { type Movie, movies } from "@/lib/movies";
 import MovieList from "@/components/movie-list";
 import MoviePlayer from "@/components/movie-player";
+import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
+import UploadMovie from "@/components/upload-movie";
 
 export default function Home() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [movieList, setMovieList] = useState<Movie[]>(movies);
 
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
@@ -14,6 +19,16 @@ export default function Home() {
 
   const handleBackToList = () => {
     setSelectedMovie(null);
+  };
+
+  const handleUploadMovie = (newMovie: Omit<Movie, "id" | "url"> & { file: File }) => {
+    const newMovieWithId: Movie = {
+      ...newMovie,
+      id: movieList.length + 1,
+      url: URL.createObjectURL(newMovie.file),
+    };
+    setMovieList((prevMovies) => [newMovieWithId, ...prevMovies]);
+    setIsUploading(false);
   };
 
   return (
@@ -28,13 +43,28 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="mx-auto w-full max-w-6xl items-start">
-          {selectedMovie ? (
+        {selectedMovie ? (
+          <div className="mx-auto w-full max-w-6xl items-start">
             <MoviePlayer movie={selectedMovie} onBack={handleBackToList} />
-          ) : (
-            <MovieList movies={movies} onSelectMovie={handleSelectMovie} />
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            <div className="mx-auto grid w-full max-w-6xl">
+              <div className="flex justify-end mb-4">
+                <Button onClick={() => setIsUploading(true)}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Upload Movie
+                </Button>
+              </div>
+              <MovieList movies={movieList} onSelectMovie={handleSelectMovie} />
+            </div>
+            <UploadMovie
+              isOpen={isUploading}
+              onOpenChange={setIsUploading}
+              onUpload={handleUploadMovie}
+            />
+          </>
+        )}
       </main>
     </div>
   );

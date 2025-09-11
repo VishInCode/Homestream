@@ -6,7 +6,7 @@ export interface Movie {
 }
 
 // Using placeholder videos from a public source for demonstration
-export const movies: Movie[] = [
+export let movies: Movie[] = [
   {
     id: 1,
     title: "Big Buck Bunny",
