@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { type Movie, movies } from "@/lib/movies";
+import { type Movie, movies, getMoviesByGenre } from "@/lib/movies";
 import MovieList from "@/components/movie-list";
 import MoviePlayer from "@/components/movie-player";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ export default function Home() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [movieList, setMovieList] = useState<Movie[]>(movies);
+
+  const genres = ["Action", "Sci-Fi", "Comedy", "Animation", "Drama"];
 
   const handleSelectMovie = (movie: Movie) => {
     setSelectedMovie(movie);
@@ -26,6 +28,7 @@ export default function Home() {
       ...newMovie,
       id: movieList.length + 1,
       url: URL.createObjectURL(newMovie.file),
+      imageUrl: "https://picsum.photos/seed/9/400/600"
     };
     setMovieList((prevMovies) => [newMovieWithId, ...prevMovies]);
     setIsUploading(false);
@@ -33,37 +36,40 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
-        <div className="mx-auto grid w-full max-w-6xl gap-2">
-          <h1 className="text-3xl font-semibold text-center font-headline">
-            HomeStream
-          </h1>
-          <p className="text-muted-foreground text-center mb-6">
-            Your Personal Movie Library
-          </p>
-        </div>
-
+      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background/80 px-4 backdrop-blur-sm md:px-10">
+        <h1 className="text-2xl font-bold text-primary font-headline tracking-tighter">
+          HomeStream
+        </h1>
+        <div className="flex-grow"></div>
+        <Button onClick={() => setIsUploading(true)} size="sm">
+          <Upload className="mr-2" />
+          Upload Movie
+        </Button>
+      </header>
+      <main className="flex flex-1 flex-col">
         {selectedMovie ? (
-          <div className="mx-auto w-full max-w-6xl items-start">
+          <div className="mx-auto w-full max-w-6xl p-4 md:p-10">
             <MoviePlayer movie={selectedMovie} onBack={handleBackToList} />
           </div>
         ) : (
-          <>
-            <div className="mx-auto grid w-full max-w-6xl">
-              <div className="flex justify-end mb-4">
-                <Button onClick={() => setIsUploading(true)}>
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Movie
-                </Button>
-              </div>
-              <MovieList movies={movieList} onSelectMovie={handleSelectMovie} />
-            </div>
+          <div className="flex-1 space-y-8 p-4 md:p-10">
+            {genres.map((genre) => (
+              <section key={genre}>
+                <h2 className="text-2xl font-bold tracking-tight text-foreground mb-4 font-headline">
+                  {genre}
+                </h2>
+                <MovieList
+                  movies={getMoviesByGenre(movieList, genre)}
+                  onSelectMovie={handleSelectMovie}
+                />
+              </section>
+            ))}
             <UploadMovie
               isOpen={isUploading}
               onOpenChange={setIsUploading}
               onUpload={handleUploadMovie}
             />
-          </>
+          </div>
         )}
       </main>
     </div>

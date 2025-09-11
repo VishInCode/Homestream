@@ -19,6 +19,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -28,6 +35,7 @@ import { useRef } from "react";
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
+  genre: z.string().min(1, "Genre is required"),
   file: z.instanceof(File).refine((file) => file.size > 0, "A movie file is required."),
 });
 
@@ -49,6 +57,7 @@ export default function UploadMovie({
     defaultValues: {
       title: "",
       description: "",
+      genre: "",
       file: undefined,
     },
   });
@@ -96,6 +105,31 @@ export default function UploadMovie({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="genre"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Genre</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a genre" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Action">Action</SelectItem>
+                      <SelectItem value="Comedy">Comedy</SelectItem>
+                      <SelectItem value="Drama">Drama</SelectItem>
+                      <SelectItem value="Sci-Fi">Sci-Fi</SelectItem>
+                      <SelectItem value="Animation">Animation</SelectItem>
+                      <SelectItem value="Documentary">Documentary</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
