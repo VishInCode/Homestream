@@ -39,7 +39,7 @@ export default function MovieList({ movies, onSelectMovie }: MovieListProps) {
           >
             <Card
               onClick={() => onSelectMovie(movie)}
-              className="bg-card group cursor-pointer overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-primary/20"
+              className="bg-card group cursor-pointer overflow-hidden transition-all duration-500 ease-out hover:scale-105 hover-scale glow-purple-hover glass border-purple-violet/10"
             >
               <CardContent className="p-0">
                 <div className="aspect-[2/3] w-full relative">
@@ -48,12 +48,13 @@ export default function MovieList({ movies, onSelectMovie }: MovieListProps) {
                     alt={movie.title}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16.6vw"
-                    className="object-cover transition-all duration-300 group-hover:scale-110"
+                    className="object-cover transition-all duration-500 group-hover:scale-110"
                     data-ai-hint="movie poster"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent group-hover:from-black/70" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-purple-indigo/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="absolute bottom-0 left-0 p-3">
-                    <h3 className="text-sm font-semibold text-white truncate group-hover:text-primary">
+                    <h3 className="text-sm font-semibold text-white truncate group-hover:text-gradient-purple transition-all duration-300">
                       {movie.title}
                     </h3>
                   </div>
@@ -63,8 +64,8 @@ export default function MovieList({ movies, onSelectMovie }: MovieListProps) {
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="ml-14" />
-      <CarouselNext className="mr-14" />
+      <CarouselPrevious className="ml-14 bg-gradient-purple hover:bg-gradient-purple-hover border-purple-violet/20 text-white glow-purple-hover" />
+      <CarouselNext className="mr-14 bg-gradient-purple hover:bg-gradient-purple-hover border-purple-violet/20 text-white glow-purple-hover" />
     </Carousel>
   );
 }
