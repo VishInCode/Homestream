@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Inter } from "next/font/google";
 
 export const metadata: Metadata = {
-  title: "HomeStream",
-  description: "Your local movie streaming library",
+  title: "NovaStream",
+  description: "Your premium streaming experience - Discover movies and TV shows",
 };
 
 const inter = Inter({
